@@ -10,10 +10,9 @@ Mat ConstructHistogramFrom(std::string filename){
     if( !RGBImage.data ){
         exit(-1);
     }
-    
+
     /// Separate the image in 3 places ( B, G and R )
-    std::vector<Mat> BGRPlanes;
-    split(RGBImage, BGRPlanes );
+    std::vector<Mat> BGRPlanes = SplitByChannelsImage(RGBImage, 3);
 
     /// Establish the number of bins
     int HistSize = 256;
@@ -63,4 +62,22 @@ Mat ConstructHistogramFrom(std::string filename){
     }
 
     return HistImage;
+}
+
+std::vector<Mat> SplitByChannelsImage(Mat RGBImage, int channels){
+    std::vector<Mat> RGBPlanes(channels, Mat(RGBImage.size(), CV_8UC1));
+    int width  = RGBImage.cols;
+    int height = RGBImage.rows;
+    Vec3b intensity;
+    for(int channel = 0, index = channels - 1; channel < channels; channel++, index--){
+        for(int row = 0; row < height; row++){
+            for(int column = 0; column < width; column++){
+                intensity = RGBImage.at<Vec3b>(row, column);
+                RGBPlanes
+                     .at(index)
+                     .at<uchar>(row, column) = intensity.val[channel];
+            }
+        }
+    }
+    return RGBPlanes;
 }

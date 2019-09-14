@@ -11,5 +11,6 @@ using namespace cv;
 
 #ifndef PRACTICE2_HANDS_METHODS_H
 #define PRACTICE2_HANDS_METHODS_H
-Mat ConstructHistogramFrom(std::string filename);
+Mat ConstructHistogramFrom(std::string);
+std::vector<Mat> SplitByChannelsImage(Mat RGBImage, int channels);
 #endif //PRACTICE2_HANDS_METHODS_H
