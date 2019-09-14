@@ -3,7 +3,12 @@
 
 
 int main() {
-    std::string filename = "/Users/danorel/Workspace/World of C/C++/KMA/MMPI/Histogram-Calculations/monster.jpg";
-    constructHistogram(filename);
+    std::string pathToImage = "/Users/danorel/Workspace/World of C/C++/KMA/MMPI/Histogram-Calculations/";
+    std::string image = "monster.jpg";
+
+    Mat HistImage = ConstructHistogramFrom(pathToImage + image);
+    namedWindow("Histogram-Calculations", WINDOW_AUTOSIZE );
+    imshow("Histogram-Calculations", HistImage );
+    waitKey(0);
     return 0;
 }

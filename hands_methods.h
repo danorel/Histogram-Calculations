@@ -11,5 +11,5 @@ using namespace cv;
 
 #ifndef PRACTICE2_HANDS_METHODS_H
 #define PRACTICE2_HANDS_METHODS_H
-void constructHistogram(std::string filename);
+Mat ConstructHistogramFrom(std::string filename);
 #endif //PRACTICE2_HANDS_METHODS_H
