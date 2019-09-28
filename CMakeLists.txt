@@ -8,7 +8,7 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 
 add_executable(
         Histogram-Calculations main.cpp
-        hands_methods.cpp
+        histogram.cpp
 )
 
 # linking

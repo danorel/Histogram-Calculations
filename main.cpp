@@ -1,18 +1,25 @@
 #include <iostream>
-#include "hands_methods.h"
+#include "histogram.h"
 
 
 int main() {
     std::string pathToImage = "/Users/danorel/Workspace/World of C/C++/KMA/MMPI/Histogram-Calculations/";
-    std::string image = "monster.jpg";
+    std::string image = "image1.jpg";
+    std::string ImageLabel = "Original Image";
+    std::string ImageHistogramLabel = "Original Histogram";
+    std::string ImageEqualizedLabel = "Equalized Image";
+    std::string ImageEqualizedHistogramLabel = "Equalized Histogram";
 
-//    Mat RGBImage = imread(pathToImage + image, CV_8UC3);
-//    std::vector<Mat> RGBPlane = SplitByChannelsImage(RGBImage, 3);
-//    std::cout << (RGBPlane.at(1));
+    Mat Image = imread(pathToImage + image, IMREAD_GRAYSCALE);
 
-    Mat HistImage = ConstructHistogramFrom(pathToImage + image);
-    namedWindow("Histogram-Calculations", WINDOW_AUTOSIZE );
-    imshow("Histogram-Calculations", HistImage );
-    waitKey(0);
+    HistogramManager Histogram = HistogramManager(Image);
+    Mat ImageEqualized = Histogram.EqualizeImage();
+    Mat ImageHistogram = Histogram.ProcessToHistogram();
+
+    imshow(ImageLabel, Image);
+    imshow(ImageHistogramLabel, ImageHistogram);
+    imshow(ImageEqualizedLabel, ImageEqualized);
+//    DisplayHist(ImageEqualizedHistogramLabel, );
+    waitKey();
     return 0;
 }
