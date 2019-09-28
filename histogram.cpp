@@ -14,7 +14,7 @@ HistogramManager::HistogramManager(const Mat &Image) {
     /*
      * Histogram configurations
      */
-    this->HistogramWidth  = 640;
+    this->HistogramWidth  = 512;
     this->HistogramHeight = 480;
     this->BinWidth        = cvRound(static_cast<double>(this->HistogramWidth / this->size));
 }
