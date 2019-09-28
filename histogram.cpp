@@ -44,37 +44,36 @@ Mat HistogramManager::EqualizeImage() {
 }
 
 Mat HistogramManager::EqualizeHistogram() {
-    Mat ImageEqualizedHistogram(
-            this->HistogramHeight,
-            this->HistogramWidth,
-            CV_8UC1
-    );
+    Mat ImageEqualizedHistogram;
     // Generate the histogram
     int *histogram = CreateHistogram();
+
+    // Cumulate the histogram
+    int *cumhistogram = CumulateHistogram(histogram);
+
+    // Generate the scaled histogram
+    int *scaledhistogram = ScaleHistogram(cumhistogram);
 
     // Calculate the probability of each intensity
     float *IntensityProbability = new float[this->size];
     for(int i = 0; i < this->size; i++)
-        IntensityProbability[i] = static_cast<double>(histogram[i] / this->ImageSize);
+        IntensityProbability[i] = static_cast<double>(histogram[i]) / static_cast<double>(this->ImageSize);
 
     // Initialize the equalized histogram
-    float *EqualizedHist = new float[this->size];
+    float *equalizedhistogram_float = new float[this->size];
     for(int i = 0; i < this->size; i++)
-        EqualizedHist[i] = 0;
-
-    // Generate the scaled histogram
-    int *scaledhistogram = ScaleHistogram(histogram);
+        equalizedhistogram_float[i] = 0.;
 
     // Generate the equalized histogram
     for(int i = 0; i < this->size; i++)
-        EqualizedHist[scaledhistogram[i]] += IntensityProbability[i];
+        equalizedhistogram_float[scaledhistogram[i]] += IntensityProbability[i];
 
-    int *equalizedhistogram = new int[this->size];
+    int *equalizedhistogram_int = new int[this->size];
     for(int i = 0; i < this->size; i++)
-        equalizedhistogram[i] = cvRound(EqualizedHist[i] * 255);
+        equalizedhistogram_int[i] = cvRound(equalizedhistogram_float[i] * 255);
 
     // Create the Mat object of equalized histogram
-    ImageEqualizedHistogram = ProcessToHistogram(equalizedhistogram);
+    ImageEqualizedHistogram = ProcessToHistogram(equalizedhistogram_int);
     return ImageEqualizedHistogram;
 }
 

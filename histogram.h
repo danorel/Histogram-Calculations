@@ -14,7 +14,7 @@ using namespace cv;
 class HistogramManager{
 // Interface
 public:
-    HistogramManager(const Mat&);
+    explicit HistogramManager(const Mat&);
     Mat     HistogramImage();
     Mat      EqualizeImage();
     Mat  EqualizeHistogram();
