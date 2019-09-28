@@ -15,14 +15,16 @@ class HistogramManager{
 // Interface
 public:
     HistogramManager(const Mat&);
+    Mat     HistogramImage();
     Mat      EqualizeImage();
-    Mat ProcessToHistogram();
     Mat  EqualizeHistogram();
     ~HistogramManager();
 private:
     int*   CreateHistogram();
     int* CumulateHistogram(int*);
     int*    ScaleHistogram(int*);
+    Mat ProcessToHistogram(int*);
+
 // Variables
 private:
     Mat Image;

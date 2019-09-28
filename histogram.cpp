@@ -16,44 +16,12 @@ HistogramManager::HistogramManager(const Mat &Image) {
      */
     this->HistogramWidth  = 640;
     this->HistogramHeight = 480;
-    this->BinWidth        = cvRound(static_cast<double>(this->HistogramWidth / size));
+    this->BinWidth        = cvRound(static_cast<double>(this->HistogramWidth / this->size));
 }
 
-
-
-Mat HistogramManager::ProcessToHistogram() {
-    // Initialization step
-    Mat HistogramImage(
-            this->HistogramHeight,
-            this->HistogramWidth,
-            CV_8UC1,
-            Scalar(255, 255, 255)
-    );
-    // Histogram initialization
-    int *histogram = CreateHistogram();
-
-    // Finding the maximum intensity element from histogram
-    int MaxIntensity = histogram[0];
-    for(int i = 1; i < size; i++){
-        if(MaxIntensity < histogram[i])
-            MaxIntensity = histogram[i];
-    }
-
-    // Normalization of the histogram between 0 and 1 values
-    for(int i = 0; i < size; i++)
-        histogram[i] = static_cast<double>(histogram[i] / MaxIntensity) * HistogramImage.rows;
-
-    // Draw the intensity line for histogram
-    for(int i = 0; i < size; i++)
-        line(
-                HistogramImage,
-                Point(BinWidth * (i), this->HistogramHeight),
-                Point(BinWidth * (i), this->HistogramHeight - histogram[i]),
-                Scalar(0,0,0),
-                1,
-                8,
-                0
-        );
+Mat HistogramManager::HistogramImage() {
+    int* histogram = CreateHistogram();
+    Mat HistogramImage = ProcessToHistogram(histogram);
     return HistogramImage;
 }
 
@@ -76,6 +44,11 @@ Mat HistogramManager::EqualizeImage() {
 }
 
 Mat HistogramManager::EqualizeHistogram() {
+    Mat ImageEqualizedHistogram(
+            this->HistogramHeight,
+            this->HistogramWidth,
+            CV_8UC1
+    );
     // Generate the histogram
     int *histogram = CreateHistogram();
 
@@ -93,15 +66,16 @@ Mat HistogramManager::EqualizeHistogram() {
     int *scaledhistogram = ScaleHistogram(histogram);
 
     // Generate the equalized histogram
-    for(int i = 0; i < size; i++)
+    for(int i = 0; i < this->size; i++)
         EqualizedHist[scaledhistogram[i]] += IntensityProbability[i];
 
-    int *ImageEqualizedHistogram = new int[size];
-    for(int i = 0; i < size; i++)
-        ImageEqualizedHistogram[i] = cvRound(EqualizedHist[i] * 255);
+    int *equalizedhistogram = new int[this->size];
+    for(int i = 0; i < this->size; i++)
+        equalizedhistogram[i] = cvRound(EqualizedHist[i] * 255);
 
     // Create the Mat object of equalized histogram
-    return Mat();
+    ImageEqualizedHistogram = ProcessToHistogram(equalizedhistogram);
+    return ImageEqualizedHistogram;
 }
 
 int *HistogramManager::CreateHistogram() {
@@ -135,8 +109,41 @@ int *HistogramManager::ScaleHistogram(int *cumhistogram) {
     return scaledhistogram;
 }
 
+Mat HistogramManager::ProcessToHistogram(int *histogram) {
+    // Initialization step
+    Mat HistogramImage(
+            this->HistogramHeight,
+            this->HistogramWidth,
+            CV_8UC1,
+            Scalar(255, 255, 255)
+    );
+
+    // Finding the maximum intensity element from histogram
+    int MaxIntensity = histogram[0];
+    for(int i = 1; i < this->size; i++){
+        if(MaxIntensity < histogram[i])
+            MaxIntensity = histogram[i];
+    }
+
+    // Normalization of the histogram between 0 and 1 values
+    for(int i = 0; i < this->size; i++) {
+        histogram[i] = (static_cast<float>(histogram[i]) / static_cast<float>(MaxIntensity)) * HistogramImage.rows;
+    }
+
+    // Draw the intensity line for histogram
+    for(int i = 0; i < this->size; i++)
+        line(
+                HistogramImage,
+                Point(this->BinWidth * (i), this->HistogramHeight),
+                Point(this->BinWidth * (i), this->HistogramHeight - histogram[i]),
+                Scalar(0,0,0),
+                1,
+                8,
+                0
+        );
+    return HistogramImage;
+}
+
 HistogramManager::~HistogramManager() {
 
 }
-
-

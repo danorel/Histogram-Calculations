@@ -13,13 +13,14 @@ int main() {
     Mat Image = imread(pathToImage + image, IMREAD_GRAYSCALE);
 
     HistogramManager Histogram = HistogramManager(Image);
-    Mat ImageEqualized = Histogram.EqualizeImage();
-    Mat ImageHistogram = Histogram.ProcessToHistogram();
+    Mat ImageEqualized          = Histogram.EqualizeImage();
+    Mat ImageHistogram          = Histogram.HistogramImage();
+    Mat ImageEqualizedHistogram = Histogram.EqualizeHistogram();
 
     imshow(ImageLabel, Image);
     imshow(ImageHistogramLabel, ImageHistogram);
     imshow(ImageEqualizedLabel, ImageEqualized);
-//    DisplayHist(ImageEqualizedHistogramLabel, );
+    imshow(ImageEqualizedHistogramLabel, ImageEqualizedHistogram);
     waitKey();
     return 0;
 }
